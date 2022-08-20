@@ -1,18 +1,12 @@
-<!-- Using JSX -->
-<!-- http://localhost:3000/isolated/exercise/03.html -->
-
 <body>
   <div id="root"></div>
   <script src="https://unpkg.com/react@18.1.0/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@18.1.0/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone@7.12.4/babel.js"></script>
-
-  <!-- 🐨 add Babel to the page.
-       💰 Here is the script tag that'll do the job:
-  -->
-
   <script type="text/babel">
-    const element = <div className="container"> hello world </div>
+    const children = "hello world"
+    const className = "container"
+    const element = <div className={className}> {children} </div>
     ReactDOM.createRoot(document.getElementById('root')).render(element)
   </script>
 </body>
