@@ -12,7 +12,7 @@ function UsernameForm({ onSubmitUsername }) {
   const handleChange = (event) => {
     const { value } = event.target
     const isTolowerCase = value === value.toLowerCase()
-    setError(() => !isTolowerCase && "The Input Content Is All Lowercase !" || null)
+    setError(() => !isTolowerCase && "The Input Content Is All Lowercase !")
   }
 
   return (
