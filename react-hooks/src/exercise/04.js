@@ -2,16 +2,20 @@
 // http://localhost:3000/isolated/exercise/04.js
 
 import * as React from 'react'
-
+import {useLocalStorageState} from '../utils'
 function Board() {
-  const [squares,setSquares] = React.useState(Array(9).fill(null))
+  const [squares,setSquares] = useLocalStorageState("squares",()=>Array(9).fill(null))
+  const [historyActionState , setHistoryActionState] = useLocalStorageState("historyActionState",[])
+  const [step , setStep ] = useLocalStorageState("step",0)
   const winner = calculateWinner(squares)
   const nextValue = calculateNextValue(squares)
   const status = calculateStatus(winner,squares,nextValue)
+
   function selectSquare(square) {
     if (squares[square] || winner) return
     const newsquares = [...squares]
     newsquares[square] = nextValue
+    setHistoryActionState((states)=>[...states,newsquares])
     setSquares(newsquares)
   }
 
@@ -27,9 +31,16 @@ function Board() {
     )
   }
 
+  function handleHistoryAction(historyActionState,index) {
+    setSquares(historyActionState)
+    setStep(index)
+    setHistoryActionState((states)=>{
+      return states.slice(0,index+1)
+    })
+  }
+
   return (
     <div>
-      <div className="status">{status}</div>
       <div className="board-row">
         {renderSquare(0)}
         {renderSquare(1)}
@@ -45,6 +56,13 @@ function Board() {
         {renderSquare(7)}
         {renderSquare(8)}
       </div>
+      <div className="status">{status}</div>
+      <ul className='history--action'>
+        { historyActionState.length > 0 && historyActionState.map((item,index)=><li 
+            onClick={()=>handleHistoryAction(item,index)} key={index}>
+            {index === 0 ? "go to game start" : `go to remove #${index} ${step === index ? '( current )' : ""}`}
+          </li>) }
+      </ul>
       <button className="restart" onClick={restart}>
         restart
       </button>
