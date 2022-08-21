@@ -18,6 +18,7 @@ function Board() {
     newsquares[square] = nextValue
     setHistoryActionState((states)=>[...states,newsquares])
     setSquares(newsquares)
+    setStep(historyActionState.length)
   }
 
   function restart() {
