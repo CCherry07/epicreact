@@ -34,9 +34,6 @@ function Board() {
   function handleHistoryAction(historyActionState,index) {
     setSquares(historyActionState)
     setStep(index)
-    setHistoryActionState((states)=>{
-      return states.slice(0,index+1)
-    })
   }
 
   return (
