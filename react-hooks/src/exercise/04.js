@@ -5,7 +5,8 @@ import * as React from 'react'
 import {useLocalStorageState} from '../utils'
 function Board() {
   const [squares,setSquares] = useLocalStorageState("squares",()=>Array(9).fill(null))
-  const [historyActionState , setHistoryActionState] = useLocalStorageState("historyActionState",[()=>Array(9).fill(null)])
+  const [historyActionState , setHistoryActionState] = useLocalStorageState("historyActionState",[Array(9).fill(null)])
+  
   const [step , setStep ] = useLocalStorageState("step",0)
   const winner = calculateWinner(squares)
   const nextValue = calculateNextValue(squares)
