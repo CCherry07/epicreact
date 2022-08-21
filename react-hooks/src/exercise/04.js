@@ -16,9 +16,10 @@ function Board() {
   // This is the function your square click handler will call. `square` should
   // be an index. So if they click the center square, this will be `4`.
   function selectSquare(square) {
-    if (squares[square] || calculateWinner(squares)) {
+    if (squares[square]) 
       throw new Error("like someone clicked a square that's already been clicked")
-    }
+      
+    if (calculateWinner(squares)) return
     const newsquares = [...squares]
     newsquares[square] = calculateNextValue(squares)
     setSquares(newsquares)
