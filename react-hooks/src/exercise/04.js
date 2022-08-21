@@ -2,21 +2,21 @@
 // http://localhost:3000/isolated/exercise/04.js
 
 import * as React from 'react'
-import {useLocalStorageState} from '../utils'
+import { useLocalStorageState } from '../utils'
 function Board() {
-  const [squares,setSquares] = useLocalStorageState("squares",()=>Array(9).fill(null))
-  const [historyActionState , setHistoryActionState] = useLocalStorageState("historyActionState",[Array(9).fill(null)])
-  
-  const [step , setStep ] = useLocalStorageState("step",0)
+  const [squares, setSquares] = useLocalStorageState("squares", () => Array(9).fill(null))
+  const [historyActionState, setHistoryActionState] = useLocalStorageState("historyActionState", [Array(9).fill(null)])
+  const [step, setStep] = useLocalStorageState("step", 0)
+
   const winner = calculateWinner(squares)
   const nextValue = calculateNextValue(squares)
-  const status = calculateStatus(winner,squares,nextValue)
+  const status = calculateStatus(winner, squares, nextValue)
 
   function selectSquare(square) {
     if (squares[square] || winner) return
     const newsquares = [...squares]
     newsquares[square] = nextValue
-    setHistoryActionState((states)=>[...states,newsquares])
+    setHistoryActionState((states) => [...states, newsquares])
     setSquares(newsquares)
     setStep(historyActionState.length)
   }
@@ -33,7 +33,7 @@ function Board() {
     )
   }
 
-  function handleHistoryAction(historyActionState,index) {
+  function handleHistoryAction(historyActionState, index) {
     setSquares(historyActionState)
     setStep(index)
   }
@@ -57,10 +57,10 @@ function Board() {
       </div>
       <div className="status">{status}</div>
       <ul className='history--action'>
-        { historyActionState.length > 0 && historyActionState.map((item,index)=><li 
-            onClick={()=>handleHistoryAction(item,index)} key={index}>
-            {index === 0 ? "go to game start" : `go to remove #${index} ${step === index ? '( current )' : ""}`}
-          </li>) }
+        {historyActionState.length > 0 && historyActionState.map((item, index) => <li
+          onClick={() => handleHistoryAction(item, index)} key={index}>
+          {index === 0 ? "go to game start" : `go to remove #${index} ${step === index ? '( current )' : ""}`}
+        </li>)}
       </ul>
       <button className="restart" onClick={restart}>
         restart
@@ -84,8 +84,8 @@ function calculateStatus(winner, squares, nextValue) {
   return winner
     ? `Winner: ${winner}`
     : squares.every(Boolean)
-    ? `Scratch: Cat's game`
-    : `Next player: ${nextValue}`
+      ? `Scratch: Cat's game`
+      : `Next player: ${nextValue}`
 }
 
 // eslint-disable-next-line no-unused-vars
