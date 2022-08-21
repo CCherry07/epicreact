@@ -6,16 +6,28 @@ import * as React from 'react'
 // function isVoid(value){
 //   return value !== 0 && value !== false ? !!value : false;
 // }
-function useLocalStorageState(key,defultValue = "") {
-  const [ state , setState ] = React.useState(()=>window.localStorage.getItem(key) ?? defultValue)
+function useLocalStorageState(key, defultValue = "", { serialize = JSON.stringify, deserialize = JSON.parse } = {}) {
+  const [state, setState] = React.useState(() => {
+    const storageValue = window.localStorage.getItem(key)
+    if (storageValue) {
+      return deserialize(storageValue)
+    }
+    return typeof defultValue === "function" ? defultValue() : defultValue
+  })
+  const prevKeyRef = React.useRef(key)
   React.useEffect(() => {
-    window.localStorage.setItem(key,state)
-  }, [key,state]);
-  return [ state , setState ]
+    const prevKey = prevKeyRef.current
+    if (prevKey !== key) {
+      window.localStorage.removeItem(prevKey)
+    }
+    prevKeyRef.current = key
+    window.localStorage.setItem(key, serialize(state))
+  }, [key, state, serialize]);
+  return [state, setState]
 }
 
-function Greeting({initialName = ''}) {
-  const [name, setName] = useLocalStorageState("name",initialName)
+function Greeting({ initialName = '' }) {
+  const [name, setName] = useLocalStorageState("name", ()=>"cherry")
   function handleChange(event) {
     setName(event.target.value)
   }
