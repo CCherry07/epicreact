@@ -42,7 +42,6 @@ function Game() {
   const [historyActionState, setHistoryActionState] = useLocalStorageState("historyActionState", [Array(9).fill(null)])
   const [currentStep , setCurrentStep] = useLocalStorageState("step",0)
 
-
   const currentSquares = historyActionState[currentStep]
   const winner = calculateWinner(currentSquares)
   const nextValue = calculateNextValue(currentSquares)
@@ -79,7 +78,7 @@ function Game() {
       </div>
       <div className="game-info">
         <div>{status}</div>
-        <div>{moves}</div>
+        <ol>{moves}</ol>
       </div>
     </div>
   )
