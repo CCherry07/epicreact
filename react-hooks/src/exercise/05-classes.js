@@ -21,7 +21,7 @@ function Tilt({children}) {
     }
     VanillaTilt.init(tiltNode, vanillaTiltOptions)
     return () => {
-      tiltNode.VanillaTilt.destroy()
+      tiltNode.vanillaTilt.destroy()
     };
   }, []);
   return (
