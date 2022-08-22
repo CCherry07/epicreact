@@ -4,26 +4,37 @@
 import * as React from 'react'
 import { PokemonForm, fetchPokemon, PokemonInfoFallback, PokemonDataView } from '../pokemon'
 
+
+function useAsync(promise, initialConfig) {
+
+}
+
 function PokemonInfo({ pokemonName }) {
+  const [status, setStatus] = React.useState("idle")
   const [pokemon, setPokemon] = React.useState(null)
   const [error, setError] = React.useState("")
   React.useEffect(() => {
     if (!pokemonName) return
     setPokemon(null)
-    fetchPokemon(pokemonName).then((res)=>{
+    setStatus("pending")
+    fetchPokemon(pokemonName).then((res) => {
       setPokemon(res)
+      setStatus("resolved")
       error.message && setError("")
-    }).catch(setError)
+    }, (err) => {
+      setError(err)
+      setStatus("rejected")
+    })
   }, [pokemonName]);
   return (
     <>
-      {error.message && <div role="alert">
+      {status === "rejected" && <div role="alert">
         There was an error: <pre style={{ whiteSpace: 'normal' }}>{error.message}</pre>
       </div>}
       <div>
-      { !pokemonName && "Submit a pokemon" }
-      { pokemonName && !pokemon && <PokemonInfoFallback name={pokemonName} />}
-      { pokemon && <PokemonDataView pokemon={pokemon} /> }
+        {status === "idle" && "Submit a pokemon"}
+        {status === "pending" && <PokemonInfoFallback name={pokemonName} />}
+        {status === "resolved" && <PokemonDataView pokemon={pokemon} />}
       </div>
     </>
   )
