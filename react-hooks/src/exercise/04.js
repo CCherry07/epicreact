@@ -3,7 +3,7 @@
 
 import * as React from 'react'
 import { useLocalStorageState } from '../utils'
-function Board({squares , onClick }) {
+function Board({ squares, onClick }) {
   function renderSquare(i) {
     return (
       <button className="square" onClick={() => onClick(i)}>
@@ -11,11 +11,6 @@ function Board({squares , onClick }) {
       </button>
     )
   }
-
-  // function handleHistoryAction(historyActionState, index) {
-  //   setSquares(historyActionState)
-  //   setStep(index)
-  // }
 
   return (
     <div>
@@ -40,7 +35,7 @@ function Board({squares , onClick }) {
 
 function Game() {
   const [historyActionState, setHistoryActionState] = useLocalStorageState("historyActionState", [Array(9).fill(null)])
-  const [currentStep , setCurrentStep] = useLocalStorageState("step",0)
+  const [currentStep, setCurrentStep] = useLocalStorageState("step", 0)
 
   const currentSquares = historyActionState[currentStep]
   const winner = calculateWinner(currentSquares)
@@ -49,7 +44,7 @@ function Game() {
 
   function selectSquare(square) {
     if (currentSquares[square] || winner) return
-    const newHistoryActionState = [...historyActionState.slice(0,currentStep + 1)]
+    const newHistoryActionState = [...historyActionState.slice(0, currentStep + 1)]
     const newsquares = [...currentSquares]
     newsquares[square] = nextValue
     setHistoryActionState([...newHistoryActionState, newsquares])
@@ -62,10 +57,10 @@ function Game() {
   }
 
 
-  const moves = historyActionState.map((historyState,step)=>{
+  const moves = historyActionState.map((historyState, step) => {
     const desc = step === 0 ? "Go To Game Start" : `Go To Move #${step}`
     const isCurrentStep = step === currentStep
-    return (<li key={step}> <button disabled={isCurrentStep} onClick={()=> setCurrentStep(step)}> { desc } { isCurrentStep ? "(current)" : "" } </button> </li>)
+    return (<li key={step}> <button disabled={isCurrentStep} onClick={() => setCurrentStep(step)}> {desc} {isCurrentStep ? "(current)" : ""} </button> </li>)
   })
 
   return (
