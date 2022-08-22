@@ -5,13 +5,13 @@
 import * as React from 'react'
 import { useLocalStorageState } from '../utils'
 function Board() {
-  const [squares,setSquares ] = useLocalStorageState("squares",Array(9).fill(null))
+  const [squares, setSquares] = useLocalStorageState("squares", Array(9).fill(null))
 
   const nextValue = calculateNextValue(squares)
   const winner = calculateWinner(squares)
   let status = calculateStatus(winner, squares, nextValue)
 
- function selectSquare(square) {
+  function selectSquare(square) {
     const nextValue = calculateNextValue(squares)
     if (calculateWinner(squares) || squares[square]) {
       return
@@ -25,7 +25,7 @@ function Board() {
     <button className="square" onClick={() => selectSquare(i)}>
       {squares[i]}
     </button>
-  ) 
+  )
 
   const restart = () => {
     setSquares(Array(9).fill(null))
@@ -70,8 +70,8 @@ function calculateStatus(winner, squares, nextValue) {
   return winner
     ? `Winner: ${winner}`
     : squares.every(Boolean)
-    ? `Scratch: Cat's game`
-    : `Next player: ${nextValue}`
+      ? `Scratch: Cat's game`
+      : `Next player: ${nextValue}`
 }
 
 function calculateNextValue(squares) {
