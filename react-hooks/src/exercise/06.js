@@ -27,15 +27,17 @@ function useAsync(promise, initialConfig) {
 // }
 
 
-function FallbackErrorComponet({ error }) {
+function FallbackErrorComponet({ error , resetErrorBoundary}) {
   return (<div role="alert">
     There was an error: <pre style={{ whiteSpace: 'normal' }}>{error.message}</pre>
+    <br></br>
+    <button onClick={resetErrorBoundary}>Try Again</button>
   </div>)
 }
 
 function PokemonInfo({ pokemonName }) {
   const [state, setState] = React.useState({
-    status: pokemonName ? "pending": "idle",
+    status:"idle",
     pokemon: null,
     error: null
   })
@@ -72,12 +74,16 @@ function App() {
     setPokemonName(newPokemonName)
   }
 
+  function handleReset() {
+    setPokemonName("")
+  }
+
   return (
     <div className="pokemon-info-app">
       <PokemonForm pokemonName={pokemonName} onSubmit={handleSubmit} />
       <hr />
       <div className="pokemon-info">
-        <ErrorBoundary key={pokemonName} fallbackRender={FallbackErrorComponet}>
+        <ErrorBoundary resetKeys={[pokemonName]} onReset={handleReset} fallbackRender={FallbackErrorComponet}>
           <PokemonInfo pokemonName={pokemonName} />
         </ErrorBoundary>
       </div>
