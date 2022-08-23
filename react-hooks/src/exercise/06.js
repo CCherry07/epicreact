@@ -5,11 +5,6 @@ import * as React from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import { PokemonForm, fetchPokemon, PokemonInfoFallback, PokemonDataView } from '../pokemon'
 
-
-function useAsync(promise, initialConfig) {
-
-}
-
 // class ErrorBoundary extends React.Component {
 //   state = { error : null}
 
@@ -27,7 +22,7 @@ function useAsync(promise, initialConfig) {
 // }
 
 
-function FallbackErrorComponet({ error , resetErrorBoundary}) {
+function FallbackErrorComponet({ error, resetErrorBoundary }) {
   return (<div role="alert">
     There was an error: <pre style={{ whiteSpace: 'normal' }}>{error.message}</pre>
     <br></br>
@@ -37,7 +32,7 @@ function FallbackErrorComponet({ error , resetErrorBoundary}) {
 
 function PokemonInfo({ pokemonName }) {
   const [state, setState] = React.useState({
-    status:"idle",
+    status: "idle",
     pokemon: null,
     error: null
   })
