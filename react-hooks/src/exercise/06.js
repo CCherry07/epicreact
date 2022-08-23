@@ -25,14 +25,18 @@ class ErrorBoundary extends React.Component {
     const { error } = this.state
     console.log("ErrorBoundary", this.state.error);
     if (error) {
-      return (<div role="alert">
-        There was an error: <pre style={{ whiteSpace: 'normal' }}>{error.message}</pre>
-      </div>)
+      return <this.props.FallbackErrorComponet error = { error }></this.props.FallbackErrorComponet>
     }
     return this.props.children
   }
 }
 
+
+function  FallbackErrorComponet({ error }) {
+  return (<div role="alert">
+  There was an error: <pre style={{ whiteSpace: 'normal' }}>{error.message}</pre>
+</div>)
+}
 
 function PokemonInfo({ pokemonName }) {
   const [status, setStatus] = React.useState("idle")
@@ -77,7 +81,7 @@ function App() {
       <PokemonForm pokemonName={pokemonName} onSubmit={handleSubmit} />
       <hr />
       <div className="pokemon-info">
-        <ErrorBoundary>
+        <ErrorBoundary key={pokemonName} FallbackErrorComponet = {FallbackErrorComponet}>
           <PokemonInfo pokemonName={pokemonName} />
         </ErrorBoundary>
       </div>
