@@ -2,6 +2,7 @@
 // http://localhost:3000/isolated/exercise/06.js
 
 import * as React from 'react'
+import { ErrorBoundary } from 'react-error-boundary'
 import { PokemonForm, fetchPokemon, PokemonInfoFallback, PokemonDataView } from '../pokemon'
 
 
@@ -9,52 +10,47 @@ function useAsync(promise, initialConfig) {
 
 }
 
-class ErrorBoundary extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      error: null
-    }
-  }
+// class ErrorBoundary extends React.Component {
+//   state = { error : null}
 
-  static getDerivedStateFromError(error) {
-    return { error }
-  }
+//   static getDerivedStateFromError(error) {
+//     return { error }
+//   }
 
-  render() {
-    const { error } = this.state
-    console.log("ErrorBoundary", this.state.error);
-    if (error) {
-      return <this.props.FallbackErrorComponet error = { error }></this.props.FallbackErrorComponet>
-    }
-    return this.props.children
-  }
-}
+//   render() {
+//     const { error } = this.state
+//     if (error) {
+//       return <this.props.FallbackErrorComponet error = { error }></this.props.FallbackErrorComponet>
+//     }
+//     return this.props.children
+//   }
+// }
 
 
-function  FallbackErrorComponet({ error }) {
+function FallbackErrorComponet({ error }) {
   return (<div role="alert">
-  There was an error: <pre style={{ whiteSpace: 'normal' }}>{error.message}</pre>
-</div>)
+    There was an error: <pre style={{ whiteSpace: 'normal' }}>{error.message}</pre>
+  </div>)
 }
 
 function PokemonInfo({ pokemonName }) {
-  const [status, setStatus] = React.useState("idle")
-  const [pokemon, setPokemon] = React.useState(null)
-  const [error, setError] = React.useState("")
+  const [state, setState] = React.useState({
+    status: "idle",
+    pokemon: null,
+    error: null
+  })
+  // const [status, setStatus] = React.useState("idle")
+  // const [pokemon, setPokemon] = React.useState(null)
+  // const [error, setError] = React.useState("")
+  const { status, pokemon, error } = state
   React.useEffect(() => {
     if (!pokemonName) return
-    setPokemon(null)
-    setStatus("pending")
+    setState((state) => ({ ...state, pokemon: null, status: "pending" }))
     fetchPokemon(pokemonName).then((res) => {
-      setPokemon(res)
-      setStatus("resolved")
-      error.message && setError("")
+      setState((state) => ({ ...state, pokemon: res, status: "resolved" }))
+      error.message && setState((state) => ({ ...state, error: null }))
     }, (err) => {
- 
-      setError(err)
-
-      setStatus("rejected")
+      setState((state) => ({ ...state, status: "rejected", error: err }))
     })
   }, [pokemonName]);
   if (status === "rejected") {
@@ -81,7 +77,7 @@ function App() {
       <PokemonForm pokemonName={pokemonName} onSubmit={handleSubmit} />
       <hr />
       <div className="pokemon-info">
-        <ErrorBoundary key={pokemonName} FallbackErrorComponet = {FallbackErrorComponet}>
+        <ErrorBoundary key={pokemonName} fallbackRender={FallbackErrorComponet}>
           <PokemonInfo pokemonName={pokemonName} />
         </ErrorBoundary>
       </div>
