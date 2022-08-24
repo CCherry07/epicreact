@@ -25,11 +25,11 @@ function useMounted() {
 
 function useSafeDispatch(dispatch) {
   const isMounted = useMounted()
-  return React.useCallback((...args)=>{
+  return React.useCallback((...args) => {
     if (isMounted) {
-      return dispatch(...args)
+      dispatch(...args)
     }
-  },[dispatch])
+  }, [dispatch, isMounted])
 }
 
 function pokemonInfoReducer(state, action) {
@@ -57,20 +57,7 @@ function useAsync(initialState) {
     ...initialState
   })
 
-  const mountedRef = React.useRef(false)
-
-  React.useEffect(() => {
-    mountedRef.current = true
-    return () => {
-      mountedRef.current = false
-    }
-  }, [])
-
-  const dispatch = React.useCallback((...args) => {
-    if (mountedRef.current) {
-      return safeDispatch(...args)
-    }
-  }, [])
+  const dispatch = useSafeDispatch(safeDispatch)
 
   const run = React.useCallback((promise) => {
     if (!(promise instanceof Promise)) return
@@ -80,7 +67,7 @@ function useAsync(initialState) {
     }, (error) => {
       dispatch({ type: "rejected", error })
     })
-  }, [])
+  }, [dispatch])
 
   return { ...state, run }
 }
