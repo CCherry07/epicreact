@@ -27,35 +27,47 @@ function pokemonInfoReducer(state, action) {
   }
 }
 
-function useAsync(asyncCallback, initialState, dependencies) {
+function useAsync(initialState, dependencies) {
   const [state, setState] = React.useReducer(pokemonInfoReducer, {
     status: "idle",
     data: null,
     error: null,
     ...initialState
   })
+
+  const [promise, setPromise] = React.useState(null)
+
+  const run = React.useCallback((promise) => {
+    if ((promise instanceof Promise)) {
+      setPromise(promise)
+    }
+  }, dependencies)
+
   React.useEffect(() => {
-    const promise = asyncCallback()
     if (!(promise instanceof Promise)) return
     setState({ type: "pending" })
-    asyncCallback().then(res => {
+    promise.then(res => {
       setState({ type: "resolved", data: res })
     }, (error) => {
       setState({ type: "rejected", error })
     })
-  }, dependencies);
-  return state
+  }, [...dependencies, promise]);
+
+  return { ...state, run }
 }
 
 function PokemonInfo({ pokemonName }) {
-  const asyncCallback = React.useCallback(() => {
+
+  const { data: pokemon, status, error, run } = useAsync({ status: pokemonName ? 'pending' : 'idle' }, [pokemonName])
+
+  React.useEffect(() => {
     if (!pokemonName) {
       return
     }
-    return fetchPokemon(pokemonName)
-  }, [pokemonName])
-  const state = useAsync(asyncCallback, { status: pokemonName ? "pending" : "idle" }, [pokemonName])
-  const { data: pokemon, status, error } = state
+    const pokemonPromise = fetchPokemon(pokemonName)
+    run(pokemonPromise)
+  }, [pokemonName, run])
+
   switch (status) {
     case 'idle':
       return <span>Submit a pokemon</span>
@@ -103,7 +115,7 @@ function AppWithUnmountCheckbox() {
           type="checkbox"
           checked={mountApp}
           onChange={e => setMountApp(e.target.checked)}
-        />{' '}
+        />
         Mount Component
       </label>
       <hr />
