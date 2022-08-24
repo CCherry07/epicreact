@@ -69,7 +69,16 @@ function useAsync(initialState) {
     })
   }, [dispatch])
 
-  return { ...state, run }
+  const setData = React.useCallback(
+    data => dispatch({ type: 'resolved', data }),
+    [dispatch],
+  )
+  const setError = React.useCallback(
+    error => dispatch({ type: 'rejected', error }),
+    [dispatch],
+  )
+
+  return { ...state, run, setData, setError }
 }
 
 function PokemonInfo({ pokemonName }) {
