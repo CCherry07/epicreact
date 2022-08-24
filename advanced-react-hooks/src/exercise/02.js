@@ -10,6 +10,17 @@ import {
   PokemonErrorBoundary,
 } from '../pokemon'
 
+function useMounted() {
+  const mountedRef = React.useRef(false)
+  React.useEffect(() => {
+    mountedRef.current = true
+    return () => {
+      mountedRef.current = false
+    }
+  }, [])
+  return mountedRef.current
+}
+
 function pokemonInfoReducer(state, action) {
   switch (action.type) {
     case 'pending': {
