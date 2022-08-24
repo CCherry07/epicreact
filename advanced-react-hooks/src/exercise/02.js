@@ -28,21 +28,35 @@ function pokemonInfoReducer(state, action) {
 }
 
 function useAsync(initialState) {
-  const [state, setState] = React.useReducer(pokemonInfoReducer, {
+  const [state, safeDispatch] = React.useReducer(pokemonInfoReducer, {
     status: "idle",
     data: null,
     error: null,
     ...initialState
   })
 
+  const mountedRef = React.useRef(false)
+
+  React.useEffect(() => {
+    mountedRef.current = true
+    return () => {
+      mountedRef.current = false
+    }
+  }, [])
+
+  const dispatch = React.useCallback((...args) => {
+    if (mountedRef.current) {
+      return safeDispatch(...args)
+    }
+  }, [])
 
   const run = React.useCallback((promise) => {
     if (!(promise instanceof Promise)) return
-    setState({ type: "pending" })
+    dispatch({ type: "pending" })
     promise.then(res => {
-      setState({ type: "resolved", data: res })
+      dispatch({ type: "resolved", data: res })
     }, (error) => {
-      setState({ type: "rejected", error })
+      dispatch({ type: "rejected", error })
     })
   }, [])
 
