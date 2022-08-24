@@ -14,7 +14,7 @@ import {
 
 function useMounted() {
   const mountedRef = React.useRef(false)
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     mountedRef.current = true
     return () => {
       mountedRef.current = false
@@ -22,7 +22,6 @@ function useMounted() {
   }, [])
   return mountedRef.current
 }
-
 
 function useSafeDispatch(dispatch) {
   const isMounted = useMounted()
