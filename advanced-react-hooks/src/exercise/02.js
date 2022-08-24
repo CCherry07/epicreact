@@ -50,14 +50,14 @@ function pokemonInfoReducer(state, action) {
 }
 
 function useAsync(initialState) {
-  const [state, safeDispatch] = React.useReducer(pokemonInfoReducer, {
+  const [state, unSafeDispatch] = React.useReducer(pokemonInfoReducer, {
     status: "idle",
     data: null,
     error: null,
     ...initialState
   })
 
-  const dispatch = useSafeDispatch(safeDispatch)
+  const dispatch = useSafeDispatch(unSafeDispatch)
 
   const run = React.useCallback((promise) => {
     if (!(promise instanceof Promise)) return
