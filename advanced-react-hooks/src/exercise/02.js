@@ -1,6 +1,8 @@
 // useCallback: custom hooks
 // http://localhost:3000/isolated/exercise/02.js
 
+
+
 import * as React from 'react'
 import {
   fetchPokemon,
@@ -19,6 +21,16 @@ function useMounted() {
     }
   }, [])
   return mountedRef.current
+}
+
+
+function useSafeDispatch(dispatch) {
+  const isMounted = useMounted()
+  return React.useCallback((...args)=>{
+    if (isMounted) {
+      return dispatch(...args)
+    }
+  },[dispatch])
 }
 
 function pokemonInfoReducer(state, action) {
