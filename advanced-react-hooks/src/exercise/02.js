@@ -27,7 +27,7 @@ function pokemonInfoReducer(state, action) {
   }
 }
 
-function useAsync(initialState, dependencies) {
+function useAsync(initialState) {
   const [state, setState] = React.useReducer(pokemonInfoReducer, {
     status: "idle",
     data: null,
@@ -35,15 +35,8 @@ function useAsync(initialState, dependencies) {
     ...initialState
   })
 
-  const [promise, setPromise] = React.useState(null)
 
   const run = React.useCallback((promise) => {
-    if ((promise instanceof Promise)) {
-      setPromise(promise)
-    }
-  }, dependencies)
-
-  React.useEffect(() => {
     if (!(promise instanceof Promise)) return
     setState({ type: "pending" })
     promise.then(res => {
@@ -51,7 +44,7 @@ function useAsync(initialState, dependencies) {
     }, (error) => {
       setState({ type: "rejected", error })
     })
-  }, [...dependencies, promise]);
+  }, [])
 
   return { ...state, run }
 }
