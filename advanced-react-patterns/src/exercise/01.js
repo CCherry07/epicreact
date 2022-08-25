@@ -8,7 +8,6 @@ import {dequal} from 'dequal'
 
 import * as userClient from '../user-client'
 import {useAuth} from '../auth-context'
-// import {UserProvider, useUser} from './context/user-context'
 
 const UserContext = React.createContext()
 UserContext.displayName = 'UserContext'
