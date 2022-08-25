@@ -73,12 +73,16 @@ function useUser() {
   return context
 }
 
-function updateUser({user,formState,userDispatch}) {
+async function updateUser({user,formState,userDispatch}) {
   userDispatch({type: 'start update', updates: formState})
-  userClient.updateUser(user, formState).then(
-    updatedUser => userDispatch({type: 'finish update', updatedUser}),
-    error => userDispatch({type: 'fail update', error}),
-  )
+  try {
+    const updatedUser = await userClient.updateUser(user,  undefined)
+    userDispatch({type: 'finish update', updatedUser})
+    return updateUser
+  } catch (error) {
+    userDispatch({type: 'fail update', error})
+    return Promise.reject(error)
+  }
 }
 
 // 🐨 add a function here called `updateUser`
