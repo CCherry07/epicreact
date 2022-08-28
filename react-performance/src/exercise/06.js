@@ -31,6 +31,16 @@ function appReducer(state, action) {
   }
 }
 
+function dogReducer(state, action) {
+  switch (action.type) {
+    case 'TYPED_IN_DOG_INPUT': {
+      return { ...state, dogName: action.dogName }
+    }
+    default: {
+      throw new Error(`Unhandled action type: ${action.type}`)
+    }
+  }
+}
 function AppProvider({ children }) {
   const [state, dispatch] = React.useReducer(appReducer, {
     grid: initialGrid,
@@ -46,7 +56,7 @@ function AppProvider({ children }) {
 
 
 function DogProvider(props) {
-  const [state, dispatch] = React.useState("")
+  const [state, dispatch] = React.useReducer(dogReducer, { dogName: "" })
   const value = { state, dispatch }
   return <DogContext.Provider value={value} {...props}></DogContext.Provider>
 }
@@ -67,7 +77,7 @@ function useAppDispatch() {
   return context
 }
 function useDog() {
-  const context = React.useContext(AppDispatchContext)
+  const context = React.useContext(DogContext)
   if (!context) {
     throw new Error('useDog must be used within the DogProvider')
   }
@@ -116,10 +126,11 @@ function Cell({ row, column }) {
 Cell = React.memo(Cell)
 
 function DogNameInput() {
-  const [dogName, setDogName] = React.useState("")
+  const { state, dispatch } = useDog()
+  const { dogName } = state
   function handleChange(event) {
     const newDogName = event.target.value
-    setDogName(newDogName)
+    dispatch({ type: "TYPED_IN_DOG_INPUT", dogName: newDogName })
   }
 
   return (
