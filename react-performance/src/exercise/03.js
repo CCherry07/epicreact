@@ -21,8 +21,8 @@ function Menu({
           getItemProps={getItemProps}
           item={item}
           index={index}
-          selectedItem={selectedItem}
-          highlightedIndex={highlightedIndex}
+          isSelected={selectedItem?.id === item.id}
+          isHighlighted={highlightedIndex === index}
         >
           {item.name}
         </ListItem>
@@ -38,12 +38,10 @@ function ListItem({
   getItemProps,
   item,
   index,
-  selectedItem,
-  highlightedIndex,
+  isSelected,
+  isHighlighted,
   ...props
 }) {
-  const isSelected = selectedItem?.id === item.id
-  const isHighlighted = highlightedIndex === index
   return (
     <li
       {...getItemProps({
@@ -59,23 +57,25 @@ function ListItem({
   )
 }
 
-ListItem = React.memo(ListItem,(prevProps,nextProps)=>{
-  if (prevProps.getItemProps !== nextProps.getItemProps) return false 
-  if (prevProps.index !== nextProps.index) return false 
-  if (prevProps.selectedItem !== nextProps.selectedItem) return false 
-  if (prevProps.item !== nextProps.item) return false 
+ListItem = React.memo(ListItem)
 
-  if (prevProps.highlightedIndex !== nextProps.highlightedIndex) {
-    const wasHighlighted = prevProps.highlightedIndex === prevProps.index
-    const newHighlighted = nextProps.highlightedIndex === nextProps.index
-    // 上次高亮，这一次高亮 ，true 不渲染
-    // 不高亮，不高亮 ， true 不渲染
-    // 其他情况都渲染
-    return wasHighlighted === newHighlighted
-  }
+// ListItem = React.memo(ListItem,(prevProps,nextProps)=>{
+//   if (prevProps.getItemProps !== nextProps.getItemProps) return false 
+//   if (prevProps.index !== nextProps.index) return false 
+//   if (prevProps.selectedItem !== nextProps.selectedItem) return false 
+//   if (prevProps.item !== nextProps.item) return false 
 
-  return true
-})
+//   if (prevProps.highlightedIndex !== nextProps.highlightedIndex) {
+//     const wasHighlighted = prevProps.highlightedIndex === prevProps.index
+//     const newHighlighted = nextProps.highlightedIndex === nextProps.index
+//     // 上次高亮，这一次高亮 ，true 不渲染
+//     // 不高亮，不高亮 ， true 不渲染
+//     // 其他情况都渲染
+//     return wasHighlighted === newHighlighted
+//   }
+
+//   return true
+// })
 // 🐨 Memoize the ListItem here using React.memo
 
 function App() {
