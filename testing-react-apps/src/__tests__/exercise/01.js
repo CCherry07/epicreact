@@ -8,6 +8,8 @@ import Counter from '../../components/counter'
 
 global.IS_REACT_ACT_ENVIRONMENT = true
 
+beforeEach(()=>document.body.innerHTML = "")
+
 test('counter increments and decrements when the buttons are clicked', () => {
   const div = document.createElement("div")
   document.body.append(div)
@@ -18,11 +20,10 @@ test('counter increments and decrements when the buttons are clicked', () => {
   const [decrement , increment] = buttons
   const message = div.firstChild.querySelector('div')
   expect(message.textContent).toBe("Current count: 0")
-  act(() => increment.dispatchEvent(new MouseEvent('click', {bubbles: true})))
+  act(() => increment.dispatchEvent(new MouseEvent('click', {bubbles: true , cancelable:true , button:0})))
   expect(message.textContent).toBe("Current count: 1")
   act(() => decrement.click())
   expect(message.textContent).toBe("Current count: 0")
-  div.remove()
 })
 
 /* eslint no-unused-vars:0 */
