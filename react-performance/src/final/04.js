@@ -2,12 +2,12 @@
 // http://localhost:3000/isolated/final/04.js
 
 import * as React from 'react'
-import {useVirtual} from 'react-virtual'
-import {useCombobox} from '../use-combobox'
-import {getItems} from '../workerized-filter-cities'
-import {useAsync, useForceRerender} from '../utils'
+import { useVirtual } from 'react-virtual'
+import { useCombobox } from '../use-combobox'
+import { getItems } from '../workerized-filter-cities'
+import { useAsync, useForceRerender } from '../utils'
 
-const getVirtualRowStyles = ({size, start}) => ({
+const getVirtualRowStyles = ({ size, start }) => ({
   position: 'absolute',
   top: 0,
   left: 0,
@@ -27,9 +27,9 @@ function Menu({
   totalHeight,
 }) {
   return (
-    <ul {...getMenuProps({ref: listRef})}>
-      <li style={{height: totalHeight}} />
-      {virtualRows.map(({index, size, start}) => {
+    <ul {...getMenuProps({ ref: listRef })}>
+      <li style={{ height: totalHeight }} />
+      {virtualRows.map(({ index, size, start }) => {
         const item = items[index]
         if (!item) return null
         return (
@@ -40,7 +40,7 @@ function Menu({
             index={index}
             isSelected={selectedItem?.id === item.id}
             isHighlighted={highlightedIndex === index}
-            style={getVirtualRowStyles({size, start})}
+            style={getVirtualRowStyles({ size, start })}
           >
             {item.name}
           </ListItem>
@@ -79,7 +79,7 @@ function App() {
   const forceRerender = useForceRerender()
   const [inputValue, setInputValue] = React.useState('')
 
-  const {data: items, run} = useAsync({data: [], status: 'pending'})
+  const { data: items, run } = useAsync({ data: [], status: 'pending' })
   React.useEffect(() => {
     run(getItems(inputValue))
   }, [inputValue, run])
@@ -105,16 +105,16 @@ function App() {
   } = useCombobox({
     items,
     inputValue,
-    onInputValueChange: ({inputValue: newValue}) => setInputValue(newValue),
-    onSelectedItemChange: ({selectedItem}) =>
+    onInputValueChange: ({ inputValue: newValue }) => setInputValue(newValue),
+    onSelectedItemChange: ({ selectedItem }) =>
       alert(
         selectedItem
           ? `You selected ${selectedItem.name}`
           : 'Selection Cleared',
       ),
     itemToString: item => (item ? item.name : ''),
-    scrollIntoView: () => {},
-    onHighlightedIndexChange: ({highlightedIndex}) =>
+    scrollIntoView: () => { },
+    onHighlightedIndexChange: ({ highlightedIndex }) =>
       highlightedIndex !== -1 && rowVirtualizer.scrollToIndex(highlightedIndex),
   })
 
@@ -124,7 +124,7 @@ function App() {
       <div>
         <label {...getLabelProps()}>Find a city</label>
         <div {...getComboboxProps()}>
-          <input {...getInputProps({type: 'text'})} />
+          <input {...getInputProps({ type: 'text' })} />
           <button onClick={() => selectItem(null)} aria-label="toggle menu">
             &#10005;
           </button>
