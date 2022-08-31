@@ -50,3 +50,21 @@ test('omitting the password results in an error', async () => {
   )
 })
 
+test('unknown server error display the error message', async () => {
+  render(<Login />)
+  const {username} = buildLoginForm()
+  server.use(
+    rest.post(
+      'https://auth-provider.example.com/api/login',
+      async (req, res, ctx) => {
+        return res(ctx.status(500), ctx.json({message: ' some error message '}))
+      },
+    ),
+  )
+  await userEvent.type(screen.getByLabelText(/username/i), username)
+  await userEvent.click(screen.getByRole('button', {name: /submit/i}))
+  await waitForElementToBeRemoved(() => screen.getByLabelText(/loading/i))
+  expect(screen.getByRole('alert').textContent).toMatchInlineSnapshot(
+    `" some error message "`,
+  )
+})
