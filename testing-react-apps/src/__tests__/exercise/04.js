@@ -4,6 +4,7 @@
 import * as React from 'react'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import faker from 'faker'
 import Login from '../../components/login'
 
 test('submitting the form calls onSubmit with username and password', async () => {
@@ -15,8 +16,8 @@ test('submitting the form calls onSubmit with username and password', async () =
   const submit = screen.getByRole('button', { name: /submit/i })
 
   const loginInfo = {
-    username: "cherry",
-    password: "123456"
+    username: faker.internet.userName(),
+    password: faker.internet.password()
   }
 
   await userEvent.type(usernameInput, loginInfo.username)
@@ -26,7 +27,7 @@ test('submitting the form calls onSubmit with username and password', async () =
   expect(handleSubmit).toHaveBeenCalledWith(loginInfo)
   // Ensures that a mock function is called an exact number of times.
   expect(handleSubmit).toHaveBeenCalledTimes(1)
-  
+
   // 🐨 create a variable called "submittedData" and a handleSubmit function that
   // accepts the data and assigns submittedData to the data that was submitted
   // 💰 if you need a hand, here's what the handleSubmit function should do:
