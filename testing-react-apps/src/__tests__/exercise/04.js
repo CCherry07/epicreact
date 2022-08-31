@@ -15,15 +15,16 @@ test('submitting the form calls onSubmit with username and password', async () =
   const passwordInput = screen.getByLabelText(/password/i)
   const submit = screen.getByRole('button', { name: /submit/i })
 
-  await userEvent.type(usernameInput, "cherry")
-  await userEvent.type(passwordInput, "123456")
-  await userEvent.click(submit)
-
-  expect(submittedData).toEqual({
+  const loginInfo = {
     username: "cherry",
     password: "123456"
-  })
+  }
 
+  await userEvent.type(usernameInput, loginInfo.username)
+  await userEvent.type(passwordInput, loginInfo.password)
+  await userEvent.click(submit)
+
+  expect(submittedData).toEqual(loginInfo)
 
   // 🐨 create a variable called "submittedData" and a handleSubmit function that
   // accepts the data and assigns submittedData to the data that was submitted
