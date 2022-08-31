@@ -7,8 +7,7 @@ import userEvent from '@testing-library/user-event'
 import Login from '../../components/login'
 
 test('submitting the form calls onSubmit with username and password', async () => {
-  let submittedData
-  const handleSubmit = (data) => submittedData = data
+  const handleSubmit = jest.fn()
   render(<Login onSubmit={handleSubmit} />)
 
   const usernameInput = screen.getByRole('textbox', { name: /username/i })
@@ -23,9 +22,11 @@ test('submitting the form calls onSubmit with username and password', async () =
   await userEvent.type(usernameInput, loginInfo.username)
   await userEvent.type(passwordInput, loginInfo.password)
   await userEvent.click(submit)
-
-  expect(submittedData).toEqual(loginInfo)
-
+  // Ensure that a mock function is called with specific arguments.
+  expect(handleSubmit).toHaveBeenCalledWith(loginInfo)
+  // Ensures that a mock function is called an exact number of times.
+  expect(handleSubmit).toHaveBeenCalledTimes(1)
+  
   // 🐨 create a variable called "submittedData" and a handleSubmit function that
   // accepts the data and assigns submittedData to the data that was submitted
   // 💰 if you need a hand, here's what the handleSubmit function should do:
