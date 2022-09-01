@@ -46,14 +46,17 @@ test('displays the users current location', async () => {
   )
   render(<Location />)
 
+  act(async () => {
+    resolve()
+    await promise
+  })
+
   expect(screen.getByLabelText(/loading/i)).toBeInTheDocument()
-  resolve()
-  await promise
   await waitForElementToBeRemoved(() => screen.getByLabelText(/loading/i))
   screen.debug()
   const { coords } = fakePosition
-  expect( screen.getByText(/Latitude/i) ).toHaveTextContent(`Latitude: ${coords.latitude}`)
-  expect( screen.getByText(/Longitude/i) ).toHaveTextContent(`Longitude: ${coords.longitude}`)
+  expect(screen.getByText(/Latitude/i)).toHaveTextContent(`Latitude: ${coords.latitude}`)
+  expect(screen.getByText(/Longitude/i)).toHaveTextContent(`Longitude: ${coords.longitude}`)
   // 🐨 create a fakePosition object that has an object called "coords" with latitude and longitude
   // 📜 https://developer.mozilla.org/en-US/docs/Web/API/GeolocationPosition
   //
