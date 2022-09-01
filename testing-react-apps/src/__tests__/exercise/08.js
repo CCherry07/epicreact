@@ -38,5 +38,14 @@ test('allows customization of the step', async () => {
   act(() => result.current.decrement())
   expect(result.current.count).toBe(0)
 })
+test('change hook initialProps case', async () => {
+  const { result , rerender } = renderHook(useCounter, { initialProps: { step: 3 } })
+  expect(result.current.count).toBe(0)
+  act(() => result.current.increment())
+  expect(result.current.count).toBe(3)
+  rerender({ step: 2 })
+  act(() => result.current.decrement())
+  expect(result.current.count).toBe(1)
+})
 
 /* eslint no-unused-vars:0 */
