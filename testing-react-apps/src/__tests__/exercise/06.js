@@ -2,11 +2,9 @@
 // http://localhost:3000/location
 
 import * as React from 'react'
-import { render, screen, act, waitForElementToBeRemoved } from '@testing-library/react'
+import { render, screen, act } from '@testing-library/react'
 import  { useCurrentPosition } from 'react-use-geolocation'
 import Location from '../../examples/location'
-
-// 🐨 set window.navigator.geolocation to an object that has a getCurrentPosition mock function
 
 jest.mock("react-use-geolocation")
 
