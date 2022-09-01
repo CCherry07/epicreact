@@ -11,7 +11,7 @@ function renderWithTheme(ui, { theme = "light", ...options } = {}) {
   function Wrapper({ children }) {
     return <ThemeProvider initialTheme={theme} > {children} </ThemeProvider>
   }
-  return render(ui, { wrapper: Wrapper })
+  return render(ui, { wrapper: Wrapper ,...options})
 }
 
 test('renders with the light styles for the light theme', () => {
