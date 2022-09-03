@@ -9,9 +9,9 @@ import {
   PokemonDataView,
   PokemonErrorBoundary,
 } from '../pokemon'
-import {createResource} from '../utils'
+import { createResource } from '../utils'
 
-function PokemonInfo({pokemonResource}) {
+function PokemonInfo({ pokemonResource }) {
   const pokemon = pokemonResource.read()
   return (
     <div>
@@ -29,12 +29,11 @@ const SUSPENSE_CONFIG = {
   busyMinDurationMs: 700,
 }
 
-// 🐨 create a pokemonResourceCache object
-
-// 🐨 create a getPokemonResource function which accepts a name checks the cache
-// for an existing resource. If there is none, then it creates a resource
-// and inserts it into the cache. Finally the function should return the
-// resource.
+const pokemonResourceCache = {}
+function getPokemonResource(pokemonName) {
+  !pokemonResourceCache[pokemonName] && (pokemonResourceCache[pokemonName] = createPokemonResource(pokemonName))
+  return pokemonResourceCache[pokemonName]
+}
 
 function createPokemonResource(pokemonName) {
   return createResource(fetchPokemon(pokemonName))
@@ -51,8 +50,7 @@ function App() {
       return
     }
     startTransition(() => {
-      // 🐨 change this to getPokemonResource instead
-      setPokemonResource(createPokemonResource(pokemonName))
+      setPokemonResource(getPokemonResource(pokemonName))
     })
   }, [pokemonName, startTransition])
 
