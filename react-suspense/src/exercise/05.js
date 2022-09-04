@@ -9,7 +9,7 @@ import {
   PokemonDataView,
   PokemonErrorBoundary,
 } from '../pokemon'
-import {createResource} from '../utils'
+import { createResource, preloadImage } from '../utils'
 
 // ❗❗❗❗
 // 🦉 On this one, make sure that you UNCHECK the "Disable cache" checkbox
@@ -28,14 +28,23 @@ import {createResource} from '../utils'
 // 🐨 Once you have the resource, then render the <img />.
 // 💰 Here's what rendering the <img /> should look like:
 // <img src={imgSrcResource.read()} {...props} />
+const imgSrcResourceCache = {}
 
-function PokemonInfo({pokemonResource}) {
+function Img({ src, alt, ...props }) {
+  let imgSrcResource = imgSrcResourceCache[src]
+  if (!imgSrcResource) {
+    imgSrcResource = createResource(preloadImage(src))
+    imgSrcResourceCache[src] = imgSrcResource
+  }
+  return <img src={imgSrcResource.read()} alt={alt} {...props} />
+}
+
+function PokemonInfo({ pokemonResource }) {
   const pokemon = pokemonResource.read()
   return (
     <div>
       <div className="pokemon-info__img-wrapper">
-        {/* 🐨 swap this img for your new Img component */}
-        <img src={pokemon.image} alt={pokemon.name} />
+        <Img src={pokemon.image} alt={pokemon.name} />
       </div>
       <PokemonDataView pokemon={pokemon} />
     </div>
