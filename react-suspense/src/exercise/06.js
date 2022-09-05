@@ -10,9 +10,9 @@ import {
   PokemonDataView,
   PokemonErrorBoundary,
 } from '../pokemon'
-import {createResource, preloadImage} from '../utils'
+import { createResource, preloadImage } from '../utils'
 
-function PokemonInfo({pokemonResource}) {
+function PokemonInfo({ pokemonResource }) {
   const pokemon = pokemonResource.data.read()
   return (
     <div>
@@ -30,33 +30,28 @@ const SUSPENSE_CONFIG = {
   busyMinDurationMs: 700,
 }
 
-const pokemonResourceCache = {}
 
-function getPokemonResource(name) {
-  const lowerName = name.toLowerCase()
-  let resource = pokemonResourceCache[lowerName]
-  if (!resource) {
-    resource = createPokemonResource(lowerName)
-    pokemonResourceCache[lowerName] = resource
-  }
-  return resource
-}
-
-function createPokemonResource(pokemonName) {
-  const data = createResource(fetchPokemon(pokemonName))
-  const image = createResource(preloadImage(getImageUrlForPokemon(pokemonName)))
-  return {data, image}
-}
-
-function App() {
-  const [pokemonName, setPokemonName] = React.useState('')
-  // 🐨 move these two lines to a custom hook called usePokemonResource
-  const [startTransition, isPending] = React.useTransition(SUSPENSE_CONFIG)
+function usePokemonResource({ transitionConfig, initialValue = "" }) {
+  const [pokemonName, setPokemonName] = React.useState(initialValue)
+  const [startTransition, isPending] = React.useTransition(transitionConfig)
   const [pokemonResource, setPokemonResource] = React.useState(null)
-  // 🐨 call usePokemonResource with the pokemonName.
-  //    It should return both the pokemonResource and isPending
+  const pokemonResourceCache = React.useRef({})
 
-  // 🐨 move this useEffect call to your custom usePokemonResource hook
+  const createPokemonResource = React.useCallback((pokemonName) => {
+    const data = createResource(fetchPokemon(pokemonName))
+    const image = createResource(preloadImage(getImageUrlForPokemon(pokemonName)))
+    return { data, image }
+  }, [])
+  const getPokemonResource = React.useCallback((name) => {
+    const lowerName = name.toLowerCase()
+    let resource = pokemonResourceCache.current[lowerName]
+    if (!resource) {
+      resource = createPokemonResource(lowerName)
+      pokemonResourceCache.current[lowerName] = resource
+    }
+    return resource
+  }, [createPokemonResource])
+
   React.useEffect(() => {
     if (!pokemonName) {
       setPokemonResource(null)
@@ -65,8 +60,20 @@ function App() {
     startTransition(() => {
       setPokemonResource(getPokemonResource(pokemonName))
     })
-  }, [pokemonName, startTransition])
+  }, [pokemonName, startTransition, getPokemonResource])
 
+  return {
+    pokemonName,
+    setPokemonName,
+    pokemonResource,
+    setPokemonResource,
+    isPending
+  }
+}
+
+function App() {
+  const { pokemonName, setPokemonName,
+    pokemonResource, isPending } = usePokemonResource({ initialValue: "", transitionConfig: SUSPENSE_CONFIG })
   function handleSubmit(newPokemonName) {
     setPokemonName(newPokemonName)
   }
