@@ -31,8 +31,7 @@ const SUSPENSE_CONFIG = {
 }
 
 
-function usePokemonResource({ transitionConfig, initialValue = "" }) {
-  const [pokemonName, setPokemonName] = React.useState(initialValue)
+function usePokemonResource({ transitionConfig, pokemonName }) {
   const [startTransition, isPending] = React.useTransition(transitionConfig)
   const [pokemonResource, setPokemonResource] = React.useState(null)
   const pokemonResourceCache = React.useRef({})
@@ -42,6 +41,7 @@ function usePokemonResource({ transitionConfig, initialValue = "" }) {
     const image = createResource(preloadImage(getImageUrlForPokemon(pokemonName)))
     return { data, image }
   }, [])
+
   const getPokemonResource = React.useCallback((name) => {
     const lowerName = name.toLowerCase()
     let resource = pokemonResourceCache.current[lowerName]
@@ -63,17 +63,14 @@ function usePokemonResource({ transitionConfig, initialValue = "" }) {
   }, [pokemonName, startTransition, getPokemonResource])
 
   return {
-    pokemonName,
-    setPokemonName,
     pokemonResource,
-    setPokemonResource,
     isPending
   }
 }
 
 function App() {
-  const { pokemonName, setPokemonName,
-    pokemonResource, isPending } = usePokemonResource({ initialValue: "", transitionConfig: SUSPENSE_CONFIG })
+  const [pokemonName, setPokemonName] = React.useState("")
+  const { pokemonResource, isPending } = usePokemonResource({ pokemonName, transitionConfig: SUSPENSE_CONFIG })
   function handleSubmit(newPokemonName) {
     setPokemonName(newPokemonName)
   }
