@@ -47,14 +47,14 @@ function CacheProvider({ children, expirationTime }) {
     return () => {
       clearInterval(interval)
     }
-  }, [])
+  }, [expirationTime])
 
   const getPokemonResource = React.useCallback((name) => {
     const lowerName = name.toLowerCase()
     !cache.current[lowerName] && (cache.current[lowerName] = createPokemonResource(lowerName))
     expirations.current[lowerName] = Date.now() + expirationTime
     return cache.current[lowerName]
-  }, [])
+  }, [expirationTime])
 
   return <PokemonResourceCacheContext.Provider value={getPokemonResource}> {children} </PokemonResourceCacheContext.Provider>
 }
@@ -81,7 +81,7 @@ function App() {
     startTransition(() => {
       setPokemonResource(getPokemonResource(pokemonName))
     })
-  }, [pokemonName, startTransition])
+  }, [pokemonName, startTransition, getPokemonResource])
 
   function handleSubmit(newPokemonName) {
     setPokemonName(newPokemonName)

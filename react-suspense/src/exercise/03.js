@@ -58,7 +58,7 @@ function App() {
       return
     }
     setTransition(() => setPokemonResource(createPokemonResource(pokemonName)))
-  }, [pokemonName])
+  }, [pokemonName, setTransition])
 
   function handleSubmit(newPokemonName) {
     setPokemonName(newPokemonName)
